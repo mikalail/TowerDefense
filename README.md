@@ -34,13 +34,13 @@ Player Towers:
 Tower, cannon - basic tower. can be improved to shoot further but slower (sniper tower), increase fire rate, increase damage, explosive shells.
 The towers are can be upgraded based upon an upgrade tree.
 
-Tower	->	Tower II		      ->	Tower III
+	Tower	->	Tower II	->	Tower III
 
-	    ->	Elemental Tower 	->	Fire
-					                  ->	Air
-					                  ->	Earth
+	    	->	Elemental Tower	->	Fire
+					->	Air
+					->	Earth
 
-	    ->	Sniper Tower		->	Sniper Tower II
+	   	->	Sniper Tower	->	Sniper Tower II
 
 
 
