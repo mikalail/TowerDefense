@@ -1,7 +1,7 @@
 # Tower Defense
 This document should be a direct representation of the game. As the game grows and changes so should this document. This way everyone is on the same page for every game asset and game component. If you have an idea please try to flesh it out here.
 
-#Goals of the player:
+Goals of the player:
 The player must manage resources to create units and towers for defense and offense. The player must survive waves of attacks or destroy the portal/s that the waves are coming from. The player wins if either of these conditions are met.
 
 Optional game modes/challenges:
