@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Type {Soldier,Enemy1,Enemy2,Enemy3,Bullet};
+public enum Type {Soldier,Enemy1,Enemy2,Enemy3,Bullet,NULL};
 
 public class EntityInfo : MonoBehaviour {
 
@@ -15,11 +15,14 @@ public class EntityInfo : MonoBehaviour {
     public string opponentTag=null;
     public string objectiveTag=null;
     public GameObject objective=null;
-
+    public int poolingIndex;
+    ObjectPooling pool;
 
     bool moving = false;
 	// Use this for initialization
 	void Start () {
+
+        pool = FindObjectOfType<ObjectPooling>();
 
         if(entityType==Type.Soldier)
         {
@@ -68,7 +71,7 @@ public class EntityInfo : MonoBehaviour {
 
     void Die()
     {
-        Destroy(gameObject);
+        pool.DisableObject(poolingIndex,entityType,gameObject);
     }
 
     public void ReachObjective()

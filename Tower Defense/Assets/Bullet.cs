@@ -9,6 +9,8 @@ public class Bullet : MonoBehaviour {
     public int damage = 10;
     public GameObject floor;
     public Vector3 floorHeight;
+    public int poolingIndex;
+    ObjectPooling pool;
 
     // Target (set by Tower)
     public Transform target=null;
@@ -16,7 +18,8 @@ public class Bullet : MonoBehaviour {
     void Start()
     {
         GameObject floor= GameObject.Find("Floor");
-        floorHeight=floor.transform.position;
+        pool = FindObjectOfType<ObjectPooling>();
+
     }
 
     void Update()
@@ -28,10 +31,6 @@ public class Bullet : MonoBehaviour {
             GetComponent<Rigidbody>().velocity = dir.normalized * speed;
         }
 
-        if(transform.position.y<floorHeight.y)
-        {
-            BulletDestroy();
-        }
 
     }
     void OnTriggerEnter(Collider co)
@@ -52,7 +51,7 @@ public class Bullet : MonoBehaviour {
 
     void BulletDestroy()
     {
-        enabled = false;
+        pool.DisableObject(poolingIndex, Type.Bullet, gameObject);
     }
     
 

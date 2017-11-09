@@ -12,10 +12,11 @@ public class Tower : MonoBehaviour {
     public float shotsPerSecond=.5f;
     public float fireRate= 0f;
     public float range = 15f;
+    ObjectPooling pool;
 
     // For Test Only
 
-        public GameObject testpoint;
+    public GameObject testpoint;
 
 
     //
@@ -29,6 +30,7 @@ public class Tower : MonoBehaviour {
     {
         fireRate = 1 / shotsPerSecond;
         gameObject.GetComponent<SphereCollider>().radius = range;
+        pool = GameObject.Find("GameManager").GetComponent<ObjectPooling>();
     }
 
     // Update is called once per frame
@@ -94,14 +96,16 @@ public class Tower : MonoBehaviour {
     void UpdateTarget()
     {
         try
-        {
-            target = enemylist[0];
-
-            if (target == null)
+        {   if (target == null && enemylist[0]==null)
             {
                 enemylist.RemoveAt(0);
                 Debug.Log("NULL");
             }
+            else
+            {
+                target = enemylist[0];
+            }
+
         }
 
         catch { Debug.Log("failed to Update"); }
@@ -110,13 +114,15 @@ public class Tower : MonoBehaviour {
 
     void Fire(GameObject target)
     {
+        PooledObject placeHolder;
 
         gameObject.transform.LookAt(new Vector3(target.transform.position.x, gameObject.transform.position.y, target.transform.position.z));
-
         try
         {
-            Instantiate(bulletPrefab, barrel.transform.position, Quaternion.identity);
-            bulletPrefab.GetComponent<Bullet>().target = target.transform;
+            Debug.Log("Attempt");
+            placeHolder = pool.InstantiateObject(Type.Bullet, barrel.position);
+            Debug.Log("Bullet Active");
+            placeHolder.objectRefrence.GetComponent<Bullet>().target = target.transform;
         }
         catch { Debug.Log("failed to Instantiate"); }
 
@@ -129,13 +135,13 @@ public class Tower : MonoBehaviour {
 
         if (co.CompareTag("Enemy"))
         {
-            
+            enemylist.RemoveAt(0);
         }
     }
 
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, range);
+        Gizmos.DrawWireSphere(transform.position,gameObject.GetComponent<SphereCollider>().radius);
     }
 }
