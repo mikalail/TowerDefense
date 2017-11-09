@@ -54,6 +54,7 @@
      <Compile Include="Assets\Bullet.cs" />
      <Compile Include="Assets\Editors\PathMaker\NodeCreator.cs" />
      <Compile Include="Assets\Editors\PathMaker\Path.cs" />
+     <Compile Include="Assets\EnemySpawner.cs" />
      <Compile Include="Assets\Prefabs\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
      <Compile Include="Assets\Scripts\EntityInfo.cs" />
      <Compile Include="Assets\Scripts\ObjectiveInfo.cs" />
