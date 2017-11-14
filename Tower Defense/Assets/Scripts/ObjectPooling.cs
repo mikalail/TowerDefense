@@ -6,7 +6,7 @@ public struct PooledObject
 {
     public GameObject objectRefrence;
     public bool inUse;
-    public Type type;
+    public EntityType type;
     public int index;
 }
 
@@ -40,7 +40,7 @@ public class ObjectPooling : MonoBehaviour {
 
     }
 
-   public PooledObject InstantiateObject(Type type, Vector3 instatiatePoint)
+   public PooledObject InstantiateObject(EntityType type, Vector3 instatiatePoint)
     {
       
         bool freeObject = false;
@@ -49,29 +49,34 @@ public class ObjectPooling : MonoBehaviour {
         placeHolder.objectRefrence = null;
         placeHolder.index = -1;
         placeHolder.inUse = false;
-        placeHolder.type = Type.NULL;
+        placeHolder.type = EntityType.NULL;
 
         switch (type)
         {
 
-            case Type.Bullet:
+            case EntityType.Bullet:
 
-                Debug.Log("Instantiation Attempted");
-                if(projectilePoolPopulated)
+              
+                if (projectilePoolPopulated)
                 {
-                    for (int i = 0; i < projectilePool.Count && projectilePool.Count!=0; i++)
+                    for (int i = 0; i < projectilePool.Count && projectilePool.Count != 0; i++)
                     {
-                    
+
                         placeHolder = projectilePool[i];
+
                         if (!placeHolder.inUse && placeHolder.type == type)
                         {
                             placeHolder.objectRefrence.transform.position = instatiatePoint;
-                            placeHolder.objectRefrence.transform.position = instatiatePoint;
+                            placeHolder.objectRefrence.SetActive(true);
+                            placeHolder.objectRefrence = enemyPool[i].objectRefrence;
+                            placeHolder.type = type;
                             placeHolder.objectRefrence.SetActive(true);
                             placeHolder.inUse = true;
-                            placeHolder.index = projectilePool[i].index;
+                            placeHolder.index = i;
+                            placeHolder.objectRefrence.GetComponent<EntityInfo>().Respawn();
+                            projectilePool[i] = placeHolder;
                             freeObject = true;
-                            
+
                         }
                     }
                 }
@@ -86,42 +91,58 @@ public class ObjectPooling : MonoBehaviour {
 
 
                 break;
-            case Type.Enemy1:
-            case Type.Enemy2:
-            case Type.Enemy3:
-
-                for (int i = 0; i < enemyPool.Count; i++)
+            case EntityType.Ghost:
+            case EntityType.Slime:
+            case EntityType.Rabbit:
+            case EntityType.Bat:
+            case EntityType.Oger:
+            case EntityType.Spider:
+                if (enemyPoolPopulated)
                 {
-                    placeHolder = enemyPool[i];
-                    if (!placeHolder.inUse && placeHolder.type == type)
+                    for (int i = 0; i < enemyPool.Count && enemyPool.Count != 0; i++)
                     {
-                        placeHolder.objectRefrence.transform.position = instatiatePoint;
-                        placeHolder.objectRefrence.transform.position = instatiatePoint;
-                        placeHolder.objectRefrence.SetActive(true);
-                        placeHolder.inUse = true;
-                        placeHolder.index = i;
-                        freeObject = true;
+                        placeHolder = enemyPool[i];
+                        if (!placeHolder.inUse && placeHolder.type == type)
+                        {
+                            placeHolder.objectRefrence.transform.position = instatiatePoint;
+                            placeHolder.objectRefrence.SetActive(true);
+                            placeHolder.objectRefrence = enemyPool[i].objectRefrence; 
+                            placeHolder.type = type;
+                            placeHolder.objectRefrence.SetActive(true);
+                            placeHolder.inUse = true;
+                            placeHolder.index = i;
+                            placeHolder.objectRefrence.GetComponent<EntityInfo>().Respawn();
+                            enemyPool[i] = placeHolder;
+                            freeObject = true;
+                            
+                        }
                     }
                 }
                 if (!freeObject)
                 {
                     placeHolder = AddObjectToPool(type, instatiatePoint);
                 }
-                break;
+                break;  
 
-            case Type.Soldier:
+          
 
-                for (int i = 0; i < soldierPool.Count; i++)
+
+            case EntityType.Soldier:
+                if (soldierPoolPopulated)
                 {
-                    placeHolder = soldierPool[i];
-                    if (!placeHolder.inUse && placeHolder.type == type)
+                    for (int i = 0; i < soldierPool.Count && enemyPool.Count != 0; i++)
                     {
-                        placeHolder.objectRefrence.transform.position = instatiatePoint;
-                        placeHolder.objectRefrence.transform.position = instatiatePoint;
-                        placeHolder.objectRefrence.SetActive(true);
-                        placeHolder.inUse = true;
-                        placeHolder.index = i;
-                        freeObject = true;
+                        placeHolder = soldierPool[i];
+                        if (!placeHolder.inUse && placeHolder.type == type)
+                        {
+                            placeHolder.objectRefrence.transform.position = instatiatePoint;
+                            placeHolder.objectRefrence.transform.position = instatiatePoint;
+                            placeHolder.objectRefrence.SetActive(true);
+                            placeHolder.inUse = true;
+                            placeHolder.index = i;
+                            freeObject = true;
+                            placeHolder.objectRefrence.GetComponent<EntityInfo>().Respawn();
+                        }
                     }
                 }
                 if (!freeObject)
@@ -139,14 +160,14 @@ public class ObjectPooling : MonoBehaviour {
     }
 
 
-    PooledObject AddObjectToPool(Type type, Vector3 instantinatePoint)
+    PooledObject AddObjectToPool(EntityType type, Vector3 instantinatePoint)
     {
         PooledObject newObject;
 
 
         switch (type) {
 
-            case Type.Bullet:
+            case EntityType.Bullet:
 
                 newObject.type = type;
                 newObject.inUse = true;
@@ -156,19 +177,20 @@ public class ObjectPooling : MonoBehaviour {
                 if (projectilePoolPopulated)
                 {
                     newObject.index = projectilePool.Count;
+                    
                 }
                 else
                 {
                     newObject.index = 0;
+                    projectilePoolPopulated = true;
                 }
                 newObject.objectRefrence.GetComponent<Bullet>().poolingIndex = newObject.index;
                 newObject.objectRefrence.GetComponent<Transform>().name="Bullet"+newObject.index;
                 projectilePool.Add(newObject);
-               
 
                 break;
 
-            case Type.Enemy1:
+            case EntityType.Ghost:
 
                 newObject.type = type;
                 newObject.inUse = true;
@@ -180,6 +202,7 @@ public class ObjectPooling : MonoBehaviour {
                 else
                 {
                     newObject.index = 0;
+                    enemyPoolPopulated = true;
                 }
                 enemyPool.Add(newObject);
 
@@ -187,7 +210,27 @@ public class ObjectPooling : MonoBehaviour {
 
                 break;
 
-            case Type.Enemy2:
+            case EntityType.Slime:
+
+                newObject.type = type;
+                newObject.inUse = true;
+                newObject.objectRefrence = GameObject.Instantiate(enemyRefrences[1], instantinatePoint, Quaternion.identity);
+                if (enemyPoolPopulated)
+                {
+                    newObject.index = enemyPool.Count;
+                }
+                else
+                {
+                    newObject.index = 0;
+                    enemyPoolPopulated = true;
+                }
+
+                newObject.objectRefrence.GetComponent<EntityInfo>().poolingIndex = newObject.index;
+                enemyPool.Add(newObject);
+                
+                break;
+
+            case EntityType.Rabbit:
 
                 newObject.type = type;
                 newObject.inUse = true;
@@ -199,14 +242,13 @@ public class ObjectPooling : MonoBehaviour {
                 else
                 {
                     newObject.index = 0;
+                    enemyPoolPopulated = true;
                 }
-
                 newObject.objectRefrence.GetComponent<EntityInfo>().poolingIndex = newObject.index;
                 enemyPool.Add(newObject);
-                
-                break;
 
-            case Type.Enemy3:
+                break;
+            case EntityType.Bat:
 
                 newObject.type = type;
                 newObject.inUse = true;
@@ -218,13 +260,51 @@ public class ObjectPooling : MonoBehaviour {
                 else
                 {
                     newObject.index = 0;
+                    enemyPoolPopulated = true;
                 }
                 newObject.objectRefrence.GetComponent<EntityInfo>().poolingIndex = newObject.index;
                 enemyPool.Add(newObject);
 
                 break;
 
-            case Type.Soldier:
+            case EntityType.Oger:
+
+                newObject.type = type;
+                newObject.inUse = true;
+                newObject.objectRefrence = GameObject.Instantiate(enemyRefrences[4], instantinatePoint, Quaternion.identity);
+                if (enemyPoolPopulated)
+                {
+                    newObject.index = enemyPool.Count;
+                }
+                else
+                {
+                    newObject.index = 0;
+                    enemyPoolPopulated = true;
+                }
+                newObject.objectRefrence.GetComponent<EntityInfo>().poolingIndex = newObject.index;
+                enemyPool.Add(newObject);
+
+                break;
+            case EntityType.Spider:
+
+                newObject.type = type;
+                newObject.inUse = true;
+                newObject.objectRefrence = GameObject.Instantiate(enemyRefrences[5], instantinatePoint, Quaternion.identity);
+                if (enemyPoolPopulated)
+                {
+                    newObject.index = enemyPool.Count;
+                }
+                else
+                {
+                    newObject.index = 0;
+                    enemyPoolPopulated = true;
+                }
+                newObject.objectRefrence.GetComponent<EntityInfo>().poolingIndex = newObject.index;
+                enemyPool.Add(newObject);
+
+                break;
+
+            case EntityType.Soldier:
                 newObject.type = type;
                 newObject.inUse = true;
                 newObject.objectRefrence = GameObject.Instantiate(soldierRefrences[0], instantinatePoint, Quaternion.identity);
@@ -235,6 +315,7 @@ public class ObjectPooling : MonoBehaviour {
                 else
                 {
                     newObject.index = 0;
+                    soldierPoolPopulated = true;
                 }
                 newObject.objectRefrence.GetComponent<EntityInfo>().poolingIndex = newObject.index;
                 soldierPool.Add(newObject);
@@ -256,36 +337,52 @@ public class ObjectPooling : MonoBehaviour {
 
     }
 
-    public void DisableObject(int index,Type type,GameObject self)
+    public void DisableObject(int index,EntityType type,GameObject self)
     {
         PooledObject placeHolder;
 
         switch (type)
         {
 
-            case Type.Bullet:
-
-                placeHolder = projectilePool[index];
-                placeHolder.objectRefrence.SetActive(false);
+            case EntityType.Bullet:
+                placeHolder = new PooledObject();
+                placeHolder.objectRefrence = self;
                 placeHolder.inUse = false;
+                placeHolder.type = type;
+                placeHolder.objectRefrence.SetActive(false);
+                placeHolder.index = index;
+                projectilePool[index] = placeHolder;
+                
+               
 
                 break;
 
-            case Type.Enemy1:
-            case Type.Enemy2:
-            case Type.Enemy3:
+            case EntityType.Ghost:
+            case EntityType.Slime:
+            case EntityType.Rabbit:
+            case EntityType.Bat:
+            case EntityType.Oger:
+            case EntityType.Spider:
 
-                placeHolder = enemyPool[index];
-                placeHolder.objectRefrence.SetActive(false);
+                placeHolder = new PooledObject();
+                placeHolder.objectRefrence = self;
                 placeHolder.inUse = false;
+                placeHolder.type = type;
+                placeHolder.objectRefrence.SetActive(false);
+                placeHolder.index = index;
+                enemyPool[index]=placeHolder;
 
                 break;
        
-            case Type.Soldier:
-                placeHolder = soldierPool[index];
-                placeHolder.objectRefrence.SetActive(false);
-                placeHolder.inUse = false;
+            case EntityType.Soldier:
 
+                placeHolder = new PooledObject();
+                placeHolder.objectRefrence = self;
+                placeHolder.inUse = false;
+                placeHolder.type = type;
+                placeHolder.objectRefrence.SetActive(false);
+                placeHolder.index = index;
+                soldierPool[index]=placeHolder;
                 break;
             default:
                 Destroy(self);

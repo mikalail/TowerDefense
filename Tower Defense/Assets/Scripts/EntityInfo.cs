@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Type {Soldier,Enemy1,Enemy2,Enemy3,Bullet,NULL};
+public enum EntityType {Soldier,Ghost,Slime,Rabbit,Bat,Oger,Spider,Bullet,NULL};
 
 public class EntityInfo : MonoBehaviour {
 
 
-    public Type entityType;
+    public EntityType entityType;
     public int Health=100;
+    public int BaseHealth=100;
     public float AttackSpeed=1.00f;
     public int Damage=10;
     public int Speed=1;
     public string opponentTag=null;
-    public string objectiveTag=null;
+    public string objectiveTag="None";
     public GameObject objective=null;
     public int poolingIndex;
     ObjectPooling pool;
@@ -22,9 +23,11 @@ public class EntityInfo : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
+        Health = BaseHealth;
+
         pool = FindObjectOfType<ObjectPooling>();
 
-        if(entityType==Type.Soldier)
+        if(entityType==EntityType.Soldier)
         {
             opponentTag = "Enemy";
         }
@@ -87,5 +90,8 @@ public class EntityInfo : MonoBehaviour {
         yield return new WaitForSeconds(.5f);
     }
 
-    
+    public void Respawn()
+    {
+        Health = BaseHealth;
+    }
 }

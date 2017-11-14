@@ -23,9 +23,12 @@ public class Pathfinding : MonoBehaviour
     public Vector3 destinationPoint;// The current destination point
     bool isMoving = true;
 
+    bool battleActive = false;// Whether or not the agent is in combat
+    public GameObject target;// Combat Target;
+
     NavMeshAgent navMeshAgent;// refrence to the NaveMeshAgent attached to the parent gameobject.
     int locationindex = 0; // Index of the current next point in the Path.
-
+    List<GameObject> enemylist;// List Of enemies currently in combat with entity;
     EntityInfo myInfo;// entity info
 
     //public Animator anim;// Refrence to the Animator connected to the parent game object.
@@ -33,23 +36,57 @@ public class Pathfinding : MonoBehaviour
 
     void Start()
     {
+        Respawn();// Sets all variables required on spawn;
+    }
 
-        navMeshAgent = transform.GetComponent<NavMeshAgent>(); // sets the reference to the navMeshAgent
+    void Respawn()
+    {   myInfo = GetComponent<EntityInfo>();// entity info;
+
+        if (myInfo.entityType==EntityType.Soldier)
+        {
+            myPath = GameObject.Find("soldierPath").GetComponent<Path>();
+        }
+        else
+        {
+            myPath = GameObject.Find("EnemyPath").GetComponent<Path>();
+        }
+
+            
+        
+                navMeshAgent = transform.GetComponent<NavMeshAgent>(); // sets the reference to the navMeshAgent
 
         destinationPoints = myPath.Nodes; // Sets reference to the list of destination points
 
         destinationPoint = destinationPoints[0].transform.position;// sets the first destination point of the point
 
-        StartCoroutine(CheckPosition());// starts the "CheckPosition Coroutine"
+        StartCoroutine(Move());// starts the "CheckPosition Coroutine"
 
-        myInfo = GetComponent<EntityInfo>();// entity info;
+        
     }
 
     // Update is called once per frame
-    void Update()
+    void UpdateTarget()
     {
+        try
+        {
+            if (!target.activeSelf && enemylist.Count > 1)//Enemy dead move to the next in target list
+            {
+                enemylist.RemoveAt(0);
+                target = enemylist[0];
+            }
+            else if (!target.activeSelf && enemylist.Count == 1)
+            {
+                enemylist.RemoveAt(0);
+                target = null;
+            }
+            else
+            {
+                target = enemylist[0];
+            }
 
+        }
 
+        catch { Debug.Log("failed to Update"); }
 
     }
 
@@ -57,60 +94,51 @@ public class Pathfinding : MonoBehaviour
 
     // Coroutine used to check the current position of the NavMeshAgent. 
 
-    IEnumerator CheckPosition()
+    IEnumerator Move()
     {
 
-        Debug.Log("Started");
-        while (true)
+
+        navMeshAgent.updatePosition =true;
+        navMeshAgent.updateRotation =true;
+        navMeshAgent.destination = destinationPoint;// the NavMeshAgent's destination is set
+                                                            // Animation(false);// The animation with reaching the location is stopped
+        yield return null;
+
+    }
+    IEnumerator Battle()
+    {
+
+        while (enemylist.Count > 0)
         {
 
-            if (this.transform.position.x == destinationPoint.x && this.transform.position.z == destinationPoint.z)
+            if (target != null)
             {
-
-              
-
+                navMeshAgent.destination = target.transform.position;
+                myInfo.Attack(target.GetComponent<EntityInfo>());
             }
-
-            else
-            {
-                navMeshAgent.destination = destinationPoint;// the NavMeshAgent's destination is set
-               // Animation(false);// The animation with reaching the location is stopped
-                yield return null;
-            }
-
+            UpdateTarget();
         }
+        StartCoroutine(Move());
+        yield return null;
     }
 
     
 
     void OnTriggerEnter(Collider other)
     {
+        /*
         if (other.CompareTag(myInfo.objectiveTag))
         {
             myInfo.ReachObjective();
         }
-        else if(other.CompareTag(myInfo.opponentTag))
+        else*/ if(other.CompareTag(myInfo.opponentTag))
         {
-            navMeshAgent.updatePosition = false;
-            navMeshAgent.updateRotation = false;
+            enemylist.Add(other.gameObject);
+            if(!battleActive)
+            {
+                StartCoroutine(Battle());
+            }
         }
     }
-    void OnTriggerStaty(Collider other)
-    {
-        if (other.CompareTag(myInfo.opponentTag))
-        {
-            myInfo.Attack(other.GetComponent<EntityInfo>());
-        }
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-         if (other.CompareTag(myInfo.opponentTag))
-        {
-            navMeshAgent.updatePosition = false;
-            navMeshAgent.updateRotation = false;
-        }
-    }
-
 
 }
