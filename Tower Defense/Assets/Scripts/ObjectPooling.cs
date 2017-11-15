@@ -63,18 +63,19 @@ public class ObjectPooling : MonoBehaviour {
                     {
 
                         placeHolder = projectilePool[i];
-
+                        Debug.Log(""+i+projectilePool[i].inUse);
                         if (!placeHolder.inUse && placeHolder.type == type)
                         {
-                            placeHolder.objectRefrence.transform.position = instatiatePoint;
-                            placeHolder.objectRefrence.SetActive(true);
+                           
+                           
                             placeHolder.objectRefrence = enemyPool[i].objectRefrence;
                             placeHolder.type = type;
-                            placeHolder.objectRefrence.SetActive(true);
                             placeHolder.inUse = true;
                             placeHolder.index = i;
-                            placeHolder.objectRefrence.GetComponent<EntityInfo>().Respawn();
                             projectilePool[i] = placeHolder;
+
+                            placeHolder.objectRefrence.SetActive(true);
+                            placeHolder.objectRefrence.transform.position = instatiatePoint;
                             freeObject = true;
 
                         }

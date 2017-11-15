@@ -17,15 +17,16 @@ public class EntityInfo : MonoBehaviour {
     public string objectiveTag="None";
     public GameObject objective=null;
     public int poolingIndex;
-    ObjectPooling pool;
+    EnemyPooling pool;
 
     bool moving = false;
-	// Use this for initialization
-	void Start () {
+
+    // Use this for initialization
+    void Start () {
 
         Health = BaseHealth;
 
-        pool = FindObjectOfType<ObjectPooling>();
+        pool = GameObject.Find("GameManager").GetComponent<EnemyPooling>();
 
         if(entityType==EntityType.Soldier)
         {
@@ -74,7 +75,7 @@ public class EntityInfo : MonoBehaviour {
 
     void Die()
     {
-        pool.DisableObject(poolingIndex,entityType,gameObject);
+        pool.DisableObject(poolingIndex,gameObject);
     }
 
     public void ReachObjective()
@@ -88,6 +89,17 @@ public class EntityInfo : MonoBehaviour {
     {
         enemey.TakeDamage(Damage);
         yield return new WaitForSeconds(.5f);
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Bullet"))
+        {
+            if (gameObject.CompareTag("Enemy"))
+            {
+                other.GetComponent<Bullet>().BulletDestroy();
+            }
+        }
     }
 
     public void Respawn()

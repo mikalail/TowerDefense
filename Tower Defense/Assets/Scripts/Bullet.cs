@@ -10,7 +10,7 @@ public class Bullet : MonoBehaviour {
     public GameObject floor;
     public Vector3 floorHeight;
     public int poolingIndex;
-    ObjectPooling pool;
+    public BulletPooling pool;
 
     // Target (set by Tower)
     public Transform target=null;
@@ -18,7 +18,7 @@ public class Bullet : MonoBehaviour {
     void Start()
     {
         GameObject floor= GameObject.Find("Floor");
-        pool = FindObjectOfType<ObjectPooling>();
+        pool = FindObjectOfType<BulletPooling>();
 
     }
 
@@ -41,17 +41,11 @@ public class Bullet : MonoBehaviour {
             co.GetComponent<EntityInfo>().TakeDamage(damage);
             BulletDestroy();
         }
-
-        if(co.CompareTag("Test"))
-        {
-            Debug.Log("HIT!!!");
-            BulletDestroy();
-        }
     }
 
-    void BulletDestroy()
+    public void BulletDestroy()
     {
-        pool.DisableObject(poolingIndex, EntityType.Bullet, gameObject);
+        pool.DisableObject(poolingIndex,  gameObject);
     }
     
 

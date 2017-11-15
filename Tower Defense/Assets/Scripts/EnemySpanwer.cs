@@ -10,7 +10,7 @@ public class EnemySpanwer : MonoBehaviour {
     public float spawnTimer;
     private int[] spawnList;// Array containning the abount of enemies to Spawn 
     private SpawnerType myType = SpawnerType.Enemy;
-    private ObjectPooling pool;
+    private EnemyPooling pool;
     private Transform spawnLocation;
 
     // Use this for initialization
@@ -20,7 +20,7 @@ public class EnemySpanwer : MonoBehaviour {
         {
             spawnList = new int[6];
         }
-        pool = GameObject.Find("GameManager").GetComponent<ObjectPooling>();
+        pool = GameObject.Find("GameManager").GetComponent<EnemyPooling>();
         spawnLocation = gameObject.transform;
         NextList(2, 0, 0, 0, 0, 0);
         StartCoroutine(Spawn());

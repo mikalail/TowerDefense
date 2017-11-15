@@ -12,7 +12,7 @@ public class Tower : MonoBehaviour {
     public float shotsPerSecond=.5f;
     public float fireRate= 0f;
     public float range = 15f;
-    ObjectPooling pool;
+    public BulletPooling pool;
 
     // For Test Only
 
@@ -30,7 +30,7 @@ public class Tower : MonoBehaviour {
     {
         fireRate = 1 / shotsPerSecond;
         gameObject.GetComponent<SphereCollider>().radius = range;
-        pool = GameObject.Find("GameManager").GetComponent<ObjectPooling>();
+        pool = GameObject.Find("GameManager").GetComponent<BulletPooling>();
     }
 
     // Update is called once per frame
@@ -39,11 +39,6 @@ public class Tower : MonoBehaviour {
         if(targetsInRange)
         {
             
-        }
-
-        if(Input.anyKey)
-        {
-            Fire(testpoint);
         }
 
     }
@@ -122,14 +117,14 @@ public class Tower : MonoBehaviour {
 
     void Fire(GameObject target)
     {
-        PooledObject placeHolder;
+        GameObject placeHolder;
 
         gameObject.transform.LookAt(new Vector3(target.transform.position.x, gameObject.transform.position.y, target.transform.position.z));
         try
         {
-            placeHolder = pool.InstantiateObject(EntityType.Bullet, barrel.position);
+            placeHolder = pool.InstantiateObject( barrel.position);
             Debug.Log("Bullet Active");
-            placeHolder.objectRefrence.GetComponent<Bullet>().target = target.transform;
+            placeHolder.GetComponent<Bullet>().target = target.transform;
             Debug.Log("Target");
         }
         catch { Debug.Log("failed to Instantiate"); }

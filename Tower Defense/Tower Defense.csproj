@@ -86,6 +86,8 @@
     <Compile Include="Assets\Scripts\EntityInfo.cs" />
     <Compile Include="Assets\Scripts\ObjectiveInfo.cs" />
     <Compile Include="Assets\Scripts\ObjectPooling.cs" />
+    <Compile Include="Assets\Scripts\ObjectPooling\BulletPooling.cs" />
+    <Compile Include="Assets\Scripts\ObjectPooling\EnemyPooling.cs" />
     <Compile Include="Assets\Scripts\Pathfinding.cs" />
     <Compile Include="Assets\Scripts\Tower.cs" />
     <Compile Include="Assets\Spanwer.cs" />
