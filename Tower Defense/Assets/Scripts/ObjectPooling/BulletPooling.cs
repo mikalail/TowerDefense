@@ -71,8 +71,5 @@ public class BulletPooling : MonoBehaviour {
     {
         bulletPool[index].SetActive(false);
         bulletinUse[index]=false;
-   
-        
-            
     }
 }

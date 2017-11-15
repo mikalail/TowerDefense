@@ -7,15 +7,15 @@ public class EnemyPooling : MonoBehaviour {
     public List<GameObject> enemyPool;
     public List<bool> enemyinUse;
     public List<EntityType> enemyType;
-    bool bulletPoolPopulated;
+    bool enemyPoolPopulated;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         enemyinUse = new List<bool>();
         enemyPool = new List<GameObject>();
         enemyType = new List<EntityType>();
-        bulletPoolPopulated = false;
+        enemyPoolPopulated = false;
     }
 
     // Update is called once per frame
@@ -28,8 +28,10 @@ public class EnemyPooling : MonoBehaviour {
     {
         int index;
         GameObject placeHolder;
-        if (bulletPoolPopulated)
+        if (enemyPoolPopulated)
         {
+            Debug.Log("EnemyPool:" + enemyPool.Count);
+
             for (int i = 0; i < enemyPool.Count && enemyPool.Count != 0; i++)
             {
 
@@ -39,12 +41,13 @@ public class EnemyPooling : MonoBehaviour {
                     enemyPool[i].SetActive(true);
                     enemyPool[i].transform.position = instatiatePoint;
                     placeHolder = enemyPool[i];
+                    enemyPoolPopulated = true;
                     return placeHolder;
                 }
             }
         }
         placeHolder = AddObjectToPool(type,instatiatePoint);
-        bulletPoolPopulated = true;
+        enemyPoolPopulated = true;
         Debug.Log("New Object Created");
 
         return placeHolder;
@@ -55,12 +58,14 @@ public class EnemyPooling : MonoBehaviour {
         int index = 0;
         GameObject newEnemy;
 
-        if (bulletPoolPopulated)
+        if (enemyPoolPopulated)
         {
             index = enemyPool.Count;
+            Debug.Log(index);
         }
         else
         {
+            Debug.Log("IndexStart");
             index = 0;
         }
 
@@ -70,58 +75,66 @@ public class EnemyPooling : MonoBehaviour {
 
             case EntityType.Ghost:
                 newEnemy = GameObject.Instantiate(enemyRefrence[0], instatiatePoint, Quaternion.identity);
-                newEnemy.GetComponent<Bullet>().poolingIndex = index;
-                newEnemy.GetComponent<Transform>().name = "Bullet" + index;
+                Debug.Log("This:" + newEnemy);
+                newEnemy.GetComponent<EntityInfo>().poolingIndex = index;
+                newEnemy.GetComponent<Transform>().name = "Ghost-" + index;
                 enemyPool.Add(newEnemy);
+                Debug.Log("This:" + enemyPool[0]);
                 enemyinUse.Add(true);
                 enemyType.Add(type);
+                enemyPoolPopulated = true;
                 break;
 
             case EntityType.Slime:
                 newEnemy = GameObject.Instantiate(enemyRefrence[1], instatiatePoint, Quaternion.identity);
-                newEnemy.GetComponent<Bullet>().poolingIndex = index;
-                newEnemy.GetComponent<Transform>().name = "Bullet" + index;
+                newEnemy.GetComponent<EntityInfo>().poolingIndex = index;
+                newEnemy.GetComponent<Transform>().name = "Slime-" + index;
                 enemyPool.Add(newEnemy);
                 enemyinUse.Add(true);
                 enemyType.Add(type);
+                enemyPoolPopulated = true;
                 break;
 
 
             case EntityType.Rabbit:
                 newEnemy = GameObject.Instantiate(enemyRefrence[2], instatiatePoint, Quaternion.identity);
-                newEnemy.GetComponent<Bullet>().poolingIndex = index;
-                newEnemy.GetComponent<Transform>().name = "Bullet" + index;
+                newEnemy.GetComponent<EntityInfo>().poolingIndex = index;
+                newEnemy.GetComponent<Transform>().name = "Rabbuit-" + index;
                 enemyPool.Add(newEnemy);
                 enemyinUse.Add(true);
                 enemyType.Add(type);
+                enemyPoolPopulated = true;
                 break;
 
             case EntityType.Bat:
                 newEnemy = GameObject.Instantiate(enemyRefrence[3], instatiatePoint, Quaternion.identity);
-                newEnemy.GetComponent<Bullet>().poolingIndex = index;
-                newEnemy.GetComponent<Transform>().name = "Bullet" + index;
+                newEnemy.GetComponent<EntityInfo>().poolingIndex = index;
+                newEnemy.GetComponent<Transform>().name = "Bat-" + index;
                 enemyPool.Add(newEnemy);
                 enemyType.Add(type);
                 enemyinUse.Add(true);
                 enemyType.Add(type);
+                enemyPoolPopulated = true;
                 break;
 
             case EntityType.Oger:
                 newEnemy = GameObject.Instantiate(enemyRefrence[4], instatiatePoint, Quaternion.identity);
-                newEnemy.GetComponent<Bullet>().poolingIndex = index;
-                newEnemy.GetComponent<Transform>().name = "Bullet" + index;
+                newEnemy.GetComponent<EntityInfo>().poolingIndex = index;
+                newEnemy.GetComponent<Transform>().name = "Oger-" + index;
                 enemyPool.Add(newEnemy);
                 enemyinUse.Add(true);
                 enemyType.Add(type);
+                enemyPoolPopulated = true;
                 break;
 
             case EntityType.Spider:
                 newEnemy = GameObject.Instantiate(enemyRefrence[5], instatiatePoint, Quaternion.identity);
-                newEnemy.GetComponent<Bullet>().poolingIndex = index;
-                newEnemy.GetComponent<Transform>().name = "Bullet" + index;
+                newEnemy.GetComponent<EntityInfo>().poolingIndex = index;
+                newEnemy.GetComponent<Transform>().name = "Spider-" + index;
                 enemyPool.Add(newEnemy);
                 enemyinUse.Add(true);
                 enemyType.Add(type);
+                enemyPoolPopulated = true;
                 break;
 
             default:
@@ -138,6 +151,7 @@ public class EnemyPooling : MonoBehaviour {
     {
         Debug.Log("Index:"+index);
         enemyPool[index].SetActive(false);
+        Debug.Log("Hello");
         enemyinUse[index] = false;
 
 

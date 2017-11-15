@@ -30,14 +30,19 @@ public class Bullet : MonoBehaviour {
             Vector3 dir = target.position - transform.position;
             GetComponent<Rigidbody>().velocity = dir.normalized * speed;
         }
+        if(target==null)
+        {
+            BulletDestroy();
+        }
 
 
     }
     void OnTriggerEnter(Collider co)
     {
-
+     
         if (co.CompareTag("Enemy"))
         {
+            Debug.Log("Enemy Hit");
             co.GetComponent<EntityInfo>().TakeDamage(damage);
             BulletDestroy();
         }

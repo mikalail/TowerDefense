@@ -57,7 +57,7 @@ public class EntityInfo : MonoBehaviour {
             StartCoroutine(Flasher()); //VERY IMPORTANT!  You 'must' start coroutines with this code.
 
         }
-        else
+        else if(Health - damage<=0)
         {
             Die();
         }
@@ -91,16 +91,6 @@ public class EntityInfo : MonoBehaviour {
         yield return new WaitForSeconds(.5f);
     }
 
-    public void OnTriggerEnter(Collider other)
-    {
-        if(other.CompareTag("Bullet"))
-        {
-            if (gameObject.CompareTag("Enemy"))
-            {
-                other.GetComponent<Bullet>().BulletDestroy();
-            }
-        }
-    }
 
     public void Respawn()
     {

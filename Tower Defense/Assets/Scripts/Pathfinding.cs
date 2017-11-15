@@ -17,8 +17,7 @@ public class Pathfinding : MonoBehaviour
 {
 
     
-    public Path myPath;// Refrence to path
-    List<GameObject> destinationPoints;// list of destinoation Points transform
+    public Transform MyObjective;// Refrence to path
     public bool atLocation = false; // Whether or not the agent is at the desired location
     public Vector3 destinationPoint;// The current destination point
     bool isMoving = true;
@@ -44,27 +43,25 @@ public class Pathfinding : MonoBehaviour
 
         if (myInfo.entityType==EntityType.Soldier)
         {
-            myPath = GameObject.Find("soldierPath").GetComponent<Path>();
+            MyObjective = GameObject.Find("SoldierObjective").GetComponent<Transform>();
         }
         else
         {
-            myPath = GameObject.Find("EnemyPath").GetComponent<Path>();
+            MyObjective = GameObject.Find("EnemyObjective").GetComponent<Transform>();
         }
 
-            
-        
-                navMeshAgent = transform.GetComponent<NavMeshAgent>(); // sets the reference to the navMeshAgent
+        navMeshAgent = transform.GetComponent<NavMeshAgent>(); // sets the reference to the navMeshAgent
 
-        destinationPoints = myPath.Nodes; // Sets reference to the list of destination points
+      // Sets reference to the list of destination points
 
-        destinationPoint = destinationPoints[0].transform.position;// sets the first destination point of the point
+        destinationPoint = MyObjective.position;// sets the first destination point of the point
 
         StartCoroutine(Move());// starts the "CheckPosition Coroutine"
 
         
     }
 
-    // Update is called once per frame
+    
     void UpdateTarget()
     {
         try
