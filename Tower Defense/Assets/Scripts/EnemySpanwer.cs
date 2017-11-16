@@ -22,7 +22,7 @@ public class EnemySpanwer : MonoBehaviour {
         }
         pool = GameObject.Find("GameManager").GetComponent<EnemyPooling>();
         spawnLocation = gameObject.transform;
-        NextList(1, 0, 0, 0, 0, 0);
+        NextList(3, 0, 0, 0, 0, 0);
         StartCoroutine(Spawn());
     }
     // Update is called once per frame

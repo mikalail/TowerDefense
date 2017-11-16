@@ -94,6 +94,7 @@ public class Pathfinding : MonoBehaviour
     IEnumerator Move()
     {
 
+        myInfo.Move();
 
         navMeshAgent.updatePosition =true;
         navMeshAgent.updateRotation =true;
@@ -104,6 +105,7 @@ public class Pathfinding : MonoBehaviour
     }
     IEnumerator Battle()
     {
+        myInfo.Stop();
 
         while (enemylist.Count > 0)
         {

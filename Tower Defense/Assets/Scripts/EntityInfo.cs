@@ -17,6 +17,7 @@ public class EntityInfo : MonoBehaviour {
     public string objectiveTag="None";
     public GameObject objective=null;
     public int poolingIndex;
+    public Animator anim;
     EnemyPooling pool;
 
     bool moving = false;
@@ -39,10 +40,13 @@ public class EntityInfo : MonoBehaviour {
 
         objectiveTag = objective.tag;
 
+        anim = gameObject.GetComponent<Animator>();
+
         Debug.Log("Objective:" + objectiveTag);
 
     }
 
+ 
     // Update is called once per frame    
 
 	void Update () {
@@ -66,8 +70,11 @@ public class EntityInfo : MonoBehaviour {
     {
         Color normal = gameObject.GetComponent<Renderer>().material.color;
 
+            anim.SetTrigger("Damage");
+
             gameObject.GetComponent<Renderer>().material.color=Color.red;
             yield return new WaitForSeconds(.5f);
+            anim.ResetTrigger("Damage");
             gameObject.GetComponent<Renderer>().material.color=normal;
 
 
@@ -87,8 +94,10 @@ public class EntityInfo : MonoBehaviour {
 
     public IEnumerator Attack(EntityInfo enemey)
     {
+        anim.SetTrigger("Attack");
         enemey.TakeDamage(Damage);
         yield return new WaitForSeconds(.5f);
+        anim.ResetTrigger("Attack");
     }
 
 
@@ -96,4 +105,14 @@ public class EntityInfo : MonoBehaviour {
     {
         Health = BaseHealth;
     }
+
+    public void Move()
+    {
+        anim.SetBool("Moving", true);
+    }
+    public void Stop()
+    {
+        anim.SetBool("Moving", false);
+    }
+
 }

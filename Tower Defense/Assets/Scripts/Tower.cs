@@ -31,14 +31,15 @@ public class Tower : MonoBehaviour {
         fireRate = 1 / shotsPerSecond;
         gameObject.GetComponent<SphereCollider>().radius = range;
         pool = GameObject.Find("GameManager").GetComponent<BulletPooling>();
+        anim = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(targetsInRange)
+        if(towerActive&&target!=null)
         {
-            
+            gameObject.transform.LookAt(new Vector3(target.transform.position.x, gameObject.transform.position.y, target.transform.position.z));
         }
 
     }
@@ -54,10 +55,13 @@ public class Tower : MonoBehaviour {
             if(target!=null)
             {
                 Fire(target);
+                anim.SetBool("Fire", true);
+                anim.SetFloat("FireSpeed", shotsPerSecond);
             }
             yield return new WaitForSeconds(fireRate);
             UpdateTarget();
         }
+        anim.SetBool("Fire",false);
         Debug.Log("NO ENEMIES PRESENT");
         towerActive = false;
         yield return null;
@@ -119,7 +123,7 @@ public class Tower : MonoBehaviour {
     {
         GameObject placeHolder;
 
-        gameObject.transform.LookAt(new Vector3(target.transform.position.x, gameObject.transform.position.y, target.transform.position.z));
+       
         try
         {
             placeHolder = pool.InstantiateObject( barrel.position);
