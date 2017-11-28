@@ -55,13 +55,11 @@ public class Tower : MonoBehaviour {
             if(target!=null)
             {
                 Fire(target);
-                anim.SetBool("Fire", true);
-                anim.SetFloat("FireSpeed", shotsPerSecond);
             }
             yield return new WaitForSeconds(fireRate);
             UpdateTarget();
         }
-        anim.SetBool("Fire",false);
+        anim.SetBool("Fire", false);
         Debug.Log("NO ENEMIES PRESENT");
         towerActive = false;
         yield return null;
@@ -126,10 +124,10 @@ public class Tower : MonoBehaviour {
        
         try
         {
+            anim.SetBool("Fire",true);
             placeHolder = pool.InstantiateObject( barrel.position);
-            Debug.Log("Bullet Active");
             placeHolder.GetComponent<Bullet>().target = target.transform;
-            Debug.Log("Target");
+            
         }
         catch { Debug.Log("failed to Instantiate"); }
 
@@ -146,9 +144,5 @@ public class Tower : MonoBehaviour {
         }
     }
 
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position,gameObject.GetComponent<SphereCollider>().radius);
-    }
+
 }

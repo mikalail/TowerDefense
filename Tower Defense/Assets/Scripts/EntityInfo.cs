@@ -68,16 +68,9 @@ public class EntityInfo : MonoBehaviour {
     }
     IEnumerator Flasher()
     {
-        Color normal = gameObject.GetComponent<Renderer>().material.color;
-
             anim.SetTrigger("Damage");
-
-            gameObject.GetComponent<Renderer>().material.color=Color.red;
             yield return new WaitForSeconds(.5f);
-            anim.ResetTrigger("Damage");
-            gameObject.GetComponent<Renderer>().material.color=normal;
-
-
+           anim.ResetTrigger("Damage");
     }
 
     void Die()
