@@ -13,7 +13,7 @@ public class Tower : MonoBehaviour {
     public float fireRate= 0f;
     public float range = 15f;
     public BulletPooling pool;
-
+    Transform ps;
     // For Test Only
 
     public GameObject testpoint;
@@ -29,9 +29,12 @@ public class Tower : MonoBehaviour {
     void Start()
     {
         fireRate = 1 / shotsPerSecond;
+        
+        ps = barrel.GetChild(0);
         gameObject.GetComponent<SphereCollider>().radius = range;
         pool = GameObject.Find("GameManager").GetComponent<BulletPooling>();
         anim = gameObject.GetComponent<Animator>();
+        ps.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -51,12 +54,13 @@ public class Tower : MonoBehaviour {
 
         while(enemylist.Count>0)
         {
- 
-            if(target!=null)
+            
+            if (target!=null)
             {
                 Fire(target);
             }
             yield return new WaitForSeconds(fireRate);
+            ps.gameObject.SetActive(false);
             UpdateTarget();
         }
         anim.SetBool("Fire", false);
@@ -124,6 +128,7 @@ public class Tower : MonoBehaviour {
        
         try
         {
+            ps.gameObject.SetActive(true);
             anim.SetBool("Fire",true);
             placeHolder = pool.InstantiateObject( barrel.position);
             placeHolder.GetComponent<Bullet>().target = target.transform;
