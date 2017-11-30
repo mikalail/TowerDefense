@@ -29,7 +29,7 @@ public class EntityInfo : MonoBehaviour {
 
         pool = GameObject.Find("GameManager").GetComponent<EnemyPooling>();
 
-        if(entityType==EntityType.Soldier)
+        if(gameObject.transform.CompareTag("Soldier"))
         {
             opponentTag = "Enemy";
         }
@@ -42,7 +42,7 @@ public class EntityInfo : MonoBehaviour {
 
         anim = gameObject.GetComponent<Animator>();
 
-        Debug.Log("Objective:" + objectiveTag);
+       
 
     }
 

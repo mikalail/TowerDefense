@@ -41,7 +41,7 @@ public class Pathfinding : MonoBehaviour
     void Respawn()
     {   myInfo = GetComponent<EntityInfo>();// entity info;
 
-        if (myInfo.entityType==EntityType.Soldier)
+        if (gameObject.transform.CompareTag("Soldier"))
         {
             MyObjective = GameObject.Find("SoldierObjective").GetComponent<Transform>();
         }
