@@ -16,128 +16,91 @@ using UnityEngine.AI;
 public class Pathfinding : MonoBehaviour
 {
 
-    
-    public Transform MyObjective;// Refrence to path
+    public Path myPath;// Refrence to path
+    List<GameObject> destinationPoints;// list of destinoation Points transform
+
     public bool atLocation = false; // Whether or not the agent is at the desired location
     public Vector3 destinationPoint;// The current destination point
+
     bool isMoving = true;
 
-    bool battleActive = false;// Whether or not the agent is in combat
-    public GameObject target;// Combat Target;
-
     NavMeshAgent navMeshAgent;// refrence to the NaveMeshAgent attached to the parent gameobject.
+
     int locationindex = 0; // Index of the current next point in the Path.
-    List<GameObject> enemylist;// List Of enemies currently in combat with entity;
-    EntityInfo myInfo;// entity info
 
     //public Animator anim;// Refrence to the Animator connected to the parent game object.
 
 
     void Start()
     {
-        Respawn();// Sets all variables required on spawn;
-    }
-
-    void Respawn()
-    {   myInfo = GetComponent<EntityInfo>();// entity info;
-
-        if (gameObject.transform.CompareTag("Soldier"))
-        {
-            MyObjective = GameObject.Find("SoldierObjective").GetComponent<Transform>();
-        }
-        else
-        {
-            MyObjective = GameObject.Find("EnemyObjective").GetComponent<Transform>();
-        }
 
         navMeshAgent = transform.GetComponent<NavMeshAgent>(); // sets the reference to the navMeshAgent
 
-      // Sets reference to the list of destination points
+        destinationPoints = myPath.Nodes; // Sets reference to the list of destination points
 
-        destinationPoint = MyObjective.position;// sets the first destination point of the point
+        destinationPoint = destinationPoints[0].transform.position;// sets the first destination point of the point
 
-        StartCoroutine(Move());// starts the "CheckPosition Coroutine"
-
-        
+        StartCoroutine(CheckPosition());// starts the "CheckPosition Coroutine"
     }
 
-    
-    void UpdateTarget()
+    // Update is called once per frame
+    void Update()
     {
-        try
-        {
-            if (!target.activeSelf && enemylist.Count > 1)//Enemy dead move to the next in target list
-            {
-                enemylist.RemoveAt(0);
-                target = enemylist[0];
-            }
-            else if (!target.activeSelf && enemylist.Count == 1)
-            {
-                enemylist.RemoveAt(0);
-                target = null;
-            }
-            else
-            {
-                target = enemylist[0];
-            }
 
+
+
+    }
+
+    // A Void Function that chooses the next point in the path based on the current point.
+    void ChoosePoint()
+    {
+
+
+        if (locationindex < destinationPoints.Count)
+        {                                   //If the index is less than the max 
+            destinationPoint = (destinationPoints[locationindex].transform.position);// the new destination point is set to the next in the list
+            locationindex++;                                                         // the index is the incremented to reflect the path progression.
+        }
+        else
+        {                                                                       // If the index is last in the list then the path is reset 
+            locationindex = 0;
+            destinationPoint = (destinationPoints[locationindex].transform.position); // the next destination point is then set to the first point in the list.
         }
 
-        catch { Debug.Log("failed to Update"); }
-
     }
-
-
 
     // Coroutine used to check the current position of the NavMeshAgent. 
 
-    IEnumerator Move()
+    IEnumerator CheckPosition()
     {
 
-        myInfo.Move();
-
-        navMeshAgent.updatePosition =true;
-        navMeshAgent.updateRotation =true;
-        navMeshAgent.destination = destinationPoint;// the NavMeshAgent's destination is set
-                                                            // Animation(false);// The animation with reaching the location is stopped
-        yield return null;
-
-    }
-    IEnumerator Battle()
-    {
-        myInfo.Stop();
-
-        while (enemylist.Count > 0)
+        Debug.Log("Started");
+        while (true)
         {
 
-            if (target != null)
+            if (this.transform.position.x == destinationPoint.x && this.transform.position.z == destinationPoint.z)
             {
-                navMeshAgent.destination = target.transform.position;
-                myInfo.Attack(target.GetComponent<EntityInfo>());
+
+                ChoosePoint();// If at the destination point the next point is chosen
+               // Animation(true);// The animation assosiated with reaching the location is played
+              
+
             }
-            UpdateTarget();
-        }
-        StartCoroutine(Move());
-        yield return null;
-    }
 
-    
-
-    void OnTriggerEnter(Collider other)
-    {
-        /*
-        if (other.CompareTag(myInfo.objectiveTag))
-        {
-            myInfo.ReachObjective();
-        }
-        else //if(other.CompareTag(myInfo.opponentTag))
-        {
-            enemylist.Add(other.gameObject);
-            if(!battleActive)
+            else
             {
-                StartCoroutine(Battle());
+                navMeshAgent.destination = destinationPoint;// the NavMeshAgent's destination is set
+               // Animation(false);// The animation with reaching the location is stopped
+                yield return null;
             }
-        }*/
+
+        }
     }
+
+    void Animation(bool idle)
+    {
+   //     anim.SetBool("Idle", idle);//plays the idle animation if idle is true. Stops the idle animation if idle is false.
+    }
+
 
 }
