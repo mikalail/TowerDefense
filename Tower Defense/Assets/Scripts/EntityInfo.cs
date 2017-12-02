@@ -23,7 +23,7 @@ public class EntityInfo : MonoBehaviour {
     bool moving = false;
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
 
         Health = BaseHealth;
 
@@ -41,8 +41,6 @@ public class EntityInfo : MonoBehaviour {
         objectiveTag = objective.tag;
 
         anim = gameObject.GetComponent<Animator>();
-
-       
 
     }
 

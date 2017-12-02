@@ -4,22 +4,18 @@ using UnityEngine;
 
 public class GolemTower : MonoBehaviour {
 
-    // The Bullet
-    public Animator anim;
-    public GameObject BoulderPrefab;
-    public Transform barrel;
-    public List<GameObject> enemylist;
-    public float shotsPerSecond=.5f;
-    public float fireRate= 0f;
-    public float range = 15f;
-    public BulletPooling pool;
-    Transform ps;
-    // For Test Only
+   
+    public Animator anim;// tower animator
+    public GameObject rockPrefab; // The Boulder
+    public Transform hand;// refrence to the golems hand.
+    public List<GameObject> enemylist;// list of enemies in the area;
+    public float shotsPerSecond=.5f;//shots per second
+    public float fireDelay= 1f;// fire rate
+    public float range = 15f;// radius range
+    public RockPooling pool;
+    public int damage=10;// Ammount of damage dealt;
+    public float minimumDistance=20; 
 
-    public GameObject testpoint;
-
-
-    //
 
     public GameObject target;
 
@@ -28,13 +24,9 @@ public class GolemTower : MonoBehaviour {
 
     void Start()
     {
-        fireRate = 1 / shotsPerSecond;
-        
-        ps = barrel.GetChild(0);
         gameObject.GetComponent<SphereCollider>().radius = range;
-        pool = GameObject.Find("GameManager").GetComponent<BulletPooling>();
+        pool = GameObject.Find("GameManager").GetComponent<RockPooling>();
         anim = gameObject.GetComponent<Animator>();
-        ps.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -57,10 +49,13 @@ public class GolemTower : MonoBehaviour {
             
             if (target!=null)
             {
+                anim.SetBool("Fire", true);
+                yield return new WaitForSeconds(1.19f);
                 Fire(target);
             }
-            yield return new WaitForSeconds(fireRate);
-            ps.gameObject.SetActive(false);
+            
+            anim.SetBool("Fire", false);
+            yield return new WaitForSeconds(fireDelay);
             UpdateTarget();
         }
         anim.SetBool("Fire", false);
@@ -76,6 +71,7 @@ public class GolemTower : MonoBehaviour {
 
         if (co.CompareTag("Enemy"))
         {
+            Debug.Log("Enemy Entered Radius");
             try
             {
                 Debug.Log("Enemy Entered Radius");
@@ -86,41 +82,57 @@ public class GolemTower : MonoBehaviour {
                     StartCoroutine(TowerActive());
                 }
             }
-            catch { Debug.Log("failed to Add To List"); }
-            
-            
+            catch { Debug.Log("failed to Add To List"); }      
+ 
         }
     }
 
     void UpdateTarget()
-    {
-        try
-        {   
-            if(target==null)
-            {
-                target = enemylist[0];
-            }
-            else if (!target.activeSelf && enemylist.Count>1)//Enemy dead move to the next in target list
-            {
-                enemylist.RemoveAt(0);
-                target = enemylist[0];
-            }
-            else if(!target.activeSelf && enemylist.Count==1)
-            {
-                enemylist.RemoveAt(0);
-                target = null;
-            }
-            else 
-            {
-                target = enemylist[0];
+    {bool targetobtained = false;
+      while(!targetobtained)
+        {
+            try
+            {   
+                if(target==null)
+                {
+                    target = enemylist[0];
+                    targetobtained = true;
+                }
+                else if (!target.activeSelf && enemylist.Count>1)//Enemy dead move to the next in target list
+                {
+                    enemylist.RemoveAt(0);
+                    target = enemylist[0];
+                    if(Vector3.Distance(transform.position, target.transform.position)>=minimumDistance)
+                    {
+                        if (target.activeSelf)
+                        {
+                           targetobtained = true;
+                        }
+
+                    }
+
+                 }
+                else if(!target.activeSelf && enemylist.Count==1)
+                {
+                    enemylist.RemoveAt(0);
+                    target = null;
+                    targetobtained = true;
+                }
+                else 
+                {
+                    target = enemylist[0];
+                    targetobtained = true;
+                }
+
             }
 
-        }
+            catch { Debug.Log("failed to Update"); }
+            }
 
-        catch { Debug.Log("failed to Update"); }
         
     }
 
+    //Causes The Golem to throw a rock
     void Fire(GameObject target)
     {
         GameObject placeHolder;
@@ -128,10 +140,9 @@ public class GolemTower : MonoBehaviour {
        
         try
         {
-            ps.gameObject.SetActive(true);
-            anim.SetBool("Fire",true);
-            placeHolder = pool.InstantiateObject( barrel.position);
-            placeHolder.GetComponent<Bullet>().target = target.transform;
+            placeHolder = pool.InstantiateObject( hand.position,damage);
+            placeHolder.GetComponent<RockProjectile>().firepoint=hand;
+            placeHolder.GetComponent<RockProjectile>().SetTarget(target.transform);
             
         }
         catch { Debug.Log("failed to Instantiate"); }
@@ -140,6 +151,7 @@ public class GolemTower : MonoBehaviour {
 
     }
 
+    // On Trigger Exit The evemy removed from the queue;
     void OnTriggerExit(Collider co)
     {
 
@@ -149,5 +161,10 @@ public class GolemTower : MonoBehaviour {
         }
     }
 
+    void OnDrawGizmo()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.position, minimumDistance);
+    }
 
 }

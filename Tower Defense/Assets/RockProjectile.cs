@@ -3,52 +3,105 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class RockProjectile : MonoBehaviour {
-    public Transform target;
-    public float fireAngle = 45.0f;
-    public float gravity = 9.8f;
-
-    Vector3 myPosition;
-    float target_Distance;
-    float projectile_Velocity;
-    float Vx;
-    float Vy;
+    public Transform target; // target location
+    public Transform firepoint;// fire point 
+    public float fireAngle = 90.0f;// angle of fire
+    public float gravity = 9.8f;// force of gravity
+    public float blastTime =4.0f;// amout of blastTime
+    public RockPooling pool; // refrence to the rock Pooling Script
+    public int poolingIndex=0;// pooling index value
+    
+   
+    Vector3 myPosition;// current rock positions
+    Vector3 targetPosition;// current target position
+    float target_Distance;// Distance from target
+    float projectile_Velocity;// velocity of rock
+    float Vx;// velocity x
+    float Vy;// velocity y
     float flightDuration;
     float elapse_time;
+    public GameObject blastZone;// Blast Radius 
+    bool inFlight = false;
+    bool followHand = false;// whether or not the rock should follow the golems hand.
 
-    GameObject 
 
     // Use this for initialization
-    void Start () {
-        FlightSetUp();
-	}
-    void OnEnable(){
-        FlightSetUp();
+    void Awake () {
+        blastZone.SetActive(false);
     }
 	
-	// Update is called once per frame
-	void Update () {
-        if (elapse_time < flightDuration)
+
+    IEnumerator HitTarget()
+    {
+        blastZone.SetActive(true);
+        yield return new WaitForSeconds(4);
+        pool.DisableObject(poolingIndex,gameObject);      
+        yield return null;
+    }
+    
+    public void SetTarget(Transform newTarget)
+    {
+        target = newTarget;
+        blastZone.SetActive(false);
+        StartCoroutine(SimulateProjectile());      
+    }
+    
+
+
+
+    IEnumerator SimulateProjectile()
+    {
+        inFlight = true;
+        targetPosition = target.position;
+        targetPosition.y = 0;
+        // Move projectile to the position of throwing object + add some offset if needed.
+        transform.position = firepoint.position;
+
+        // Calculate distance to target
+        float target_Distance = Vector3.Distance(transform.position, targetPosition);
+
+        // Calculate the velocity needed to throw the object to the target at specified angle.
+        float projectile_Velocity = target_Distance / (Mathf.Sin(2 * fireAngle * Mathf.Deg2Rad) / gravity);
+
+        // Extract the X  Y componenent of the velocity
+        float Vx = Mathf.Sqrt(projectile_Velocity) * Mathf.Cos(fireAngle * Mathf.Deg2Rad);
+        float Vy = Mathf.Sqrt(projectile_Velocity) * Mathf.Sin(fireAngle * Mathf.Deg2Rad);
+
+        
+
+        // Calculate flight time.
+        float flightDuration = target_Distance / Vx;
+
+         //Rotate projectile to face the target.
+        transform.rotation = Quaternion.LookRotation(targetPosition - transform.position);
+
+        float elapse_time = 0;
+
+        while (elapse_time < flightDuration)
         {
-            gameObject.transform.Translate(0, (Vy - (gravity * elapse_time)) * Time.deltaTime, Vx * Time.deltaTime);
-
+            transform.Translate(0, (Vy - (gravity * elapse_time)) * Time.deltaTime, Vx * Time.deltaTime);
+           
             elapse_time += Time.deltaTime;
+            yield return null;
         }
+        inFlight = false;
+       
     }
 
-    void FlightSetUp()
+    public void SetDamage(int damage)
     {
-        myPosition = transform.position;
-        target_Distance = Vector3.Distance(myPosition, target.position);
-        projectile_Velocity = target_Distance / (Mathf.Sin(2 * fireAngle * Mathf.Deg2Rad) / gravity);
-        Vx = Mathf.Sqrt(projectile_Velocity) * Mathf.Cos(fireAngle * Mathf.Deg2Rad);
-        Vy = Mathf.Sqrt(projectile_Velocity) * Mathf.Sin(fireAngle * Mathf.Deg2Rad);
-        flightDuration = target_Distance / Vx;
-        elapse_time = 0;
+        blastZone.GetComponent<DamageArea>().SetDamage(damage);
     }
 
-    void OnTriggerEnter()
+
+    void OnTriggerEnter(Collider other)
     {
 
+        if(other.CompareTag("Terrain"))
+        {
+            StartCoroutine(HitTarget());
+        }
+        
     }
 
     

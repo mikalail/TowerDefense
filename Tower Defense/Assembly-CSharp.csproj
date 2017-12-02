@@ -51,6 +51,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\CameraMovement.cs" />
+     <Compile Include="Assets\DamageArea.cs" />
      <Compile Include="Assets\Editors\PathMaker\NodeCreator.cs" />
      <Compile Include="Assets\Editors\PathMaker\Path.cs" />
      <Compile Include="Assets\Prefabs\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
@@ -64,6 +66,7 @@
      <Compile Include="Assets\Scripts\ObjectPooling.cs" />
      <Compile Include="Assets\Scripts\ObjectPooling\BulletPooling.cs" />
      <Compile Include="Assets\Scripts\ObjectPooling\EnemyPooling.cs" />
+     <Compile Include="Assets\Scripts\ObjectPooling\RockPooling.cs" />
      <Compile Include="Assets\Scripts\Pathfinding.cs" />
      <Compile Include="Assets\Scripts\Tower.cs" />
      <Compile Include="Assets\Spanwer.cs" />

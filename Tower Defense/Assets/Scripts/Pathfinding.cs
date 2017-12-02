@@ -130,14 +130,14 @@ public class Pathfinding : MonoBehaviour
         {
             myInfo.ReachObjective();
         }
-        else*/ if(other.CompareTag(myInfo.opponentTag))
+        else //if(other.CompareTag(myInfo.opponentTag))
         {
             enemylist.Add(other.gameObject);
             if(!battleActive)
             {
                 StartCoroutine(Battle());
             }
-        }
+        }*/
     }
 
 }
