@@ -31,7 +31,7 @@ public class HealthUI : MonoBehaviour {
 
         else if (health>0&& health<25)
         {
-            txt.color = Color.green;
+            txt.color = Color.red;
         }
         else if (health > 25 && health < 50)
         {
@@ -39,11 +39,11 @@ public class HealthUI : MonoBehaviour {
         }
         else if (health > 50 && health < 75)
         {
-            txt.color = Color.blue;
+            txt.color = Color.yellow;
         }
         else if (health > 75 && health <= 100)
         {
-            txt.color = Color.magenta;
+            txt.color = Color.green;
         }
     }
 

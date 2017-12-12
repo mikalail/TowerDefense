@@ -18,6 +18,7 @@ public class BuildManager : MonoBehaviour
     public GameObject singleCannonPrefab;
     public GameObject doubleCannonPrefab;
     public GameObject sniperCannonPrefab;
+    public GameObject golemPrefab;
 
     private GameObject towerToBuild;
 

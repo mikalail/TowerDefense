@@ -33,7 +33,7 @@ public class Pathfinding : MonoBehaviour
     //public Animator anim;// Refrence to the Animator connected to the parent game object.
 
 
-    void Start()
+    void Awake()
     {
         Respawn();// Sets all variables required on spawn;
     }
@@ -94,12 +94,13 @@ public class Pathfinding : MonoBehaviour
     public IEnumerator Move()
     {
 
-        myInfo.Move();
 
+        navMeshAgent.enabled = true;
         navMeshAgent.updatePosition =true;
         navMeshAgent.updateRotation =true;
         navMeshAgent.destination = destinationPoint;// the NavMeshAgent's destination is set
-                                                            // Animation(false);// The animation with reaching the location is stopped
+        myInfo.Move();                                                   // Animation(false);// The animation with reaching the location is stopped
+
         yield return null;
 
     }
@@ -123,11 +124,13 @@ public class Pathfinding : MonoBehaviour
 
     public IEnumerator Stop()
     {
-        myInfo.Move();
+       
 
         navMeshAgent.updatePosition =false;
         navMeshAgent.updateRotation =false;
-                                                    // Animation(false);// The animation with reaching the location is stopped
+        navMeshAgent.enabled = false;
+        myInfo.Stop();
+        // Animation(false);// The animation with reaching the location is stopped
         yield return null;
     }
 
@@ -135,11 +138,13 @@ public class Pathfinding : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        /*
+        
         if (other.CompareTag(myInfo.objectiveTag))
         {
-            myInfo.ReachObjective();
+            myInfo.ReachObjective(other.gameObject);
         }
+        
+        /*
         else //if(other.CompareTag(myInfo.opponentTag))
         {
             enemylist.Add(other.gameObject);

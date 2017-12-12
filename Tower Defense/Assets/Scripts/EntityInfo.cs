@@ -112,10 +112,10 @@ public class EntityInfo : MonoBehaviour {
         pool.DisableObject(poolingIndex,gameObject);
     }
 
-    public void ReachObjective()
+    public void ReachObjective(GameObject objective)
     {
-        objective.GetComponent<ObjectiveInfo>().TakeDamage(Damage);
-        Die();
+        objective.GetComponentInChildren<townHealth>().decrease(Damage);
+        pool.DisableObject(poolingIndex, gameObject);
     }
 
 

@@ -20,6 +20,13 @@ public class CameraMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        // Stops camera when Game Over
+        if (GameManager.gameEnded)
+        {
+            this.enabled = false;
+            return;
+        }
+
         if (Input.GetKey(KeyCode.D))
         {
             placeHolder.Translate(new Vector3(speed * Time.deltaTime, 0, 0));

@@ -59,8 +59,11 @@
      <Compile Include="Assets\Scripts\CameraMovement.cs" />
      <Compile Include="Assets\Scripts\DamageArea.cs" />
      <Compile Include="Assets\Scripts\DoubleCannon.cs" />
+     <Compile Include="Assets\Scripts\EnemyGuiManager.cs" />
      <Compile Include="Assets\Scripts\EnemySpanwer.cs" />
      <Compile Include="Assets\Scripts\EntityInfo.cs" />
+     <Compile Include="Assets\Scripts\GameManager.cs" />
+     <Compile Include="Assets\Scripts\GameOver.cs" />
      <Compile Include="Assets\Scripts\GolemTower.cs" />
      <Compile Include="Assets\Scripts\Node.cs" />
      <Compile Include="Assets\Scripts\ObjectiveInfo.cs" />
@@ -70,12 +73,15 @@
      <Compile Include="Assets\Scripts\ObjectPooling\RockPooling.cs" />
      <Compile Include="Assets\Scripts\ObjectPooling\Text\DamageText.cs" />
      <Compile Include="Assets\Scripts\ObjectPooling\Text\DamageTextPooling.cs" />
+     <Compile Include="Assets\Scripts\ObjectPooling\Text\HealthUI.cs" />
      <Compile Include="Assets\Scripts\OpenShop.cs" />
      <Compile Include="Assets\Scripts\Pathfinding.cs" />
      <Compile Include="Assets\Scripts\RockProjectile.cs" />
      <Compile Include="Assets\Scripts\shop.cs" />
      <Compile Include="Assets\Scripts\Spanwer.cs" />
+     <Compile Include="Assets\Scripts\tGhostScript.cs" />
      <Compile Include="Assets\Scripts\Tower.cs" />
+     <Compile Include="Assets\Scripts\townHealth.cs" />
      <None Include="Assets\Prefabs\RANDOM\Fantasy_Kingdom_Pack_Lite\Demo\Read me01.txt" />
      <None Include="Assets\Prefabs\RANDOM\StoneKeep\Readme.txt" />
      <None Include="Assets\read me.txt" />

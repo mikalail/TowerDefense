@@ -27,5 +27,10 @@ public class shop : MonoBehaviour
         Debug.Log("Sniper Cannon Tower Selected");
         buildManager.SetTowerToBuild(buildManager.sniperCannonPrefab);
     }
+    public void PurchaseGolem()
+    {
+        Debug.Log("Sniper Cannon Tower Selected");
+        buildManager.SetTowerToBuild(buildManager.golemPrefab);
+    }
 
 }
